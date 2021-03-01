@@ -1,0 +1,27 @@
+body {
+  display: flex;
+  flex-direction: row;
+}
+body > div {
+  margin:10px;
+}
+#pointer {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  top:0px;
+  left:0px;
+  border-radius: 5px;
+  background-color: #e74c3c;
+  z-index: 2;
+}
+.box {
+  position: absolute;
+  background-color: #3498db;
+}
+.box:hover {
+  transition:300ms;
+  background-color: #2980b9;
+  transform: scale(1.5);
+  z-index: 3;
+}
