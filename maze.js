@@ -4,7 +4,6 @@ const maze = {
   hero: null,
   map: $("#map"),
   catchFood: () => {
-    console.log("CATCH");
     let count = 0;
     for (let i = 0; i < maze.foods.length; i++) {
       if (maze.foods[i]) {
@@ -15,7 +14,6 @@ const maze = {
      if (count > 0) {
        maze.hero.catchFood();
      } else {
-       console.log("RESET")
        maze.hero.resetStat();
      }
     }
@@ -75,17 +73,17 @@ const maze = {
       return true;
     }
     box.redrawWalls();
-    box.handleClick = function() {
+    box.handleClick = async function() {
       const value = $("#clickAction").val();
       if (value === 'PLACE_HERO') {
-        maze.hero && maze.hero.destroy();
+        maze.hero && await maze.hero.destroy();
         maze.hero = pathFinder.createHero(box.size, box.col, box.row);
       }
       if (value === 'PLACE_FOOD') {
         pathFinder.createFood(box.size, box.col, box.row);
       }
     }
-    box.click(box.handleClick);
+    box.mousedown(box.handleClick);
     box.appendTo(maze.map)
 
     return box;

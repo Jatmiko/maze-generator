@@ -28,7 +28,7 @@ $(document).ready(function(){
     maze.map.empty();
     maze.boxes = [];
     maze.foods = [];
-    maze.hero && maze.hero.destroy();
+    maze.hero && await maze.hero.destroy();
 
     await maze.traverse(0);
     $("#pointer").css({width:0, height: 0});
@@ -51,6 +51,10 @@ $(document).ready(function(){
   $("#form1").append(component.createButton("remove walls", () => {
     for (let i = 0; i < maze.boxes.length; i++) {
       const box = maze.boxes[i];
+      if ( ! box) {
+        continue;
+      }
+      
       box.walls = [false, false, false, false];
       if (box.row == 0) {
         box.walls[0] = true;
@@ -77,6 +81,29 @@ $(document).ready(function(){
     // {label: 'Change tile', value: "CHANGE_TILE"},
     {label: 'Place food', value: "PLACE_FOOD"},
   ]));
-  $("#form2").append(component.createButton("eat", () => maze.hero.catchFood()));
+  $("#form2").append(component.createDropdown("pathFinderSpeed", "Path finder speed", [
+    {label: 'Instant', value: 0, selected: true},
+    {label: 'Very fast', value: 10},
+    {label: 'Fast', value: 500},
+    {label: 'Normal', value: 250},
+    {label: 'Slow', value: 1000},
+    {label: 'Very slow', value: 3000},
+  ]));
+  $("#form2").append(component.createCheckBox("autoFindPath", "Auto find path"));
+  $("#form2").append(component.createButton("Random Hero", () => {
+    $("#clickAction").val("PLACE_HERO");
+    if (maze.boxes.length > 0) {
+      console.log(Math.floor(Math.random() * maze.boxes.length))
+      maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown");
+    }
+  }));
+  $("#form2").append(component.createButton("Random Food", () => {
+    $("#clickAction").val("PLACE_FOOD");
+    if (maze.boxes.length > 0) {
+      console.log(Math.floor(Math.random() * maze.boxes.length))
+      maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown");
+    }
+  }));
+  $("#form2").append(component.createButton("Find path", () => maze.hero.catchFood()));
   generate();
 })

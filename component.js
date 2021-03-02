@@ -30,6 +30,19 @@ const component = {
       </div>
     </div>`;
   },
+  createCheckBox: function(id, label) {
+    if (!label) {
+      label = id.substr(0,1).toUpperCase() + id.substr(1, id.length-1);
+    }
+
+    return $(`<div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="${id}">
+      <label class="form-check-label" for="${id}">
+        ${label}
+      </label>
+    </div>`);
+  },
+  
   createButton: function(text, onClick) {
     return  $(`<button type="button">${text}</button>`).addClass('btn btn-outline-primary btn-sm btn-block').click(onClick);
   }

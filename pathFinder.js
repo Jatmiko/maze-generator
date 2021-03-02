@@ -19,7 +19,7 @@ const pathFinder = {
     hero.isFindingPath = false;
     hero.requestCancel = false;
     hero.destroy = async function() {
-      console.log("Destroying");
+      maze.hero = null;
       if (hero.isFindingPath) {
         hero.requestCancel = true;
         while (hero.isFindingPath) {
@@ -29,8 +29,6 @@ const pathFinder = {
       }
       hero.resetStat();
       this.remove();
-      maze.hero = null;
-
     }
     hero.resetStat = function() {
       $(".food-check,.food-path").removeClass("food-check").removeClass("food-path");
@@ -40,9 +38,11 @@ const pathFinder = {
       hero.fromIndex = [];
     }
     hero.catchFood = async function() {
+      if(hero.requestCancel) {
+        return;
+      }
 
       if (hero.isFindingPath) {
-
         hero.requestCancel = true;
         while (hero.isFindingPath) {
           await helper.sleep(10);
@@ -94,7 +94,11 @@ const pathFinder = {
       if ( ! box.walls[3]) {
         hero.queue.push([box.col - 1, box.row, index]);
       }
-      await helper.sleep(10);
+
+      const pathFinderSpeed = parseInt($("#pathFinderSpeed").val());
+      if(pathFinderSpeed > 0) {
+        await helper.sleep(10);
+      }
       
       while (hero.queue.length > 0 && ! hero.requestCancel) {
         const curr = hero.queue.shift();
