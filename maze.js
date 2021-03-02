@@ -3,7 +3,23 @@ const maze = {
   foods: [],
   hero: null,
   map: $("#map"),
-  catchFood: () => maze.hero && maze.foods.length > 0&& maze.hero.catchFood(),
+  catchFood: () => {
+    console.log("CATCH");
+    let count = 0;
+    for (let i = 0; i < maze.foods.length; i++) {
+      if (maze.foods[i]) {
+        count++;
+      }
+    }
+    if (maze.hero) {
+     if (count > 0) {
+       maze.hero.catchFood();
+     } else {
+       console.log("RESET")
+       maze.hero.resetStat();
+     }
+    }
+  },
   data: {
     col: 10,
     row: 10,

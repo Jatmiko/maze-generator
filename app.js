@@ -28,7 +28,11 @@ $(document).ready(function(){
     maze.map.empty();
     maze.boxes = [];
     maze.foods = [];
+    maze.hero && maze.hero.destroy();
+
     await maze.traverse(0);
+    $("#pointer").css({width:0, height: 0});
+
     maze.data.isGenerating = false;
   }
 
@@ -48,7 +52,6 @@ $(document).ready(function(){
     for (let i = 0; i < maze.boxes.length; i++) {
       const box = maze.boxes[i];
       box.walls = [false, false, false, false];
-      console.log(box.col, maze.data.col)
       if (box.row == 0) {
         box.walls[0] = true;
       }

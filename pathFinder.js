@@ -16,8 +16,17 @@ const pathFinder = {
     hero.foodPath = [];
     hero.queue = [];
     hero.fromIndex = [];
-
-    hero.destroy = function() {
+    hero.isFindingPath = false;
+    hero.requestCancel = false;
+    hero.destroy = async function() {
+      console.log("Destroying");
+      if (hero.isFindingPath) {
+        hero.requestCancel = true;
+        while (hero.isFindingPath) {
+          await helper.sleep(10);
+        }
+        hero.requestCancel = false;
+      }
       hero.resetStat();
       this.remove();
       maze.hero = null;
@@ -31,20 +40,32 @@ const pathFinder = {
       hero.fromIndex = [];
     }
     hero.catchFood = async function() {
-      hero.resetStat();
-      await hero.checkFood(hero.col, hero.row);
-      if (hero.foodPath.length == 0) {
-        $(".food-check,.food-path").removeClass("food-check").removeClass("food-path");
+
+      if (hero.isFindingPath) {
+
+        hero.requestCancel = true;
+        while (hero.isFindingPath) {
+          await helper.sleep(10);
+        }
+        hero.requestCancel = false;
       }
+
+      hero.isFindingPath = true;
+      hero.resetStat();
+      
+      await hero.checkFood(hero.col, hero.row, undefined, ++hero.travelId);
+      await hero.move();
+      hero.isFindingPath = false;
     };
     hero.checkFood = async function(col, row, fromIndex) {
       const index = helper.getIndex(col, row);
-      if (hero.visited[index]) {
+      if (hero.visited[index] || hero.requestCancel) {
         return false;
       }
 
       hero.visited[index] = true;
       hero.fromIndex[index] = fromIndex;
+
       if (maze.foods[index]) {
         hero.queue = [];
         hero.foodPath.push(index);
@@ -54,6 +75,7 @@ const pathFinder = {
           pathBox.removeClass("food-check");
           pathBox.addClass("food-path");
         }
+
         return true;
       }
       
@@ -74,7 +96,7 @@ const pathFinder = {
       }
       await helper.sleep(10);
       
-      while (hero.queue.length > 0) {
+      while (hero.queue.length > 0 && ! hero.requestCancel) {
         const curr = hero.queue.shift();
         await hero.checkFood(curr[0], curr[1], curr[2]);
       }
@@ -86,6 +108,22 @@ const pathFinder = {
         hero.getPath(hero.fromIndex[index]);
       }
     };
+    hero.move = async function () {
+      while (hero.foodPath.length > 0 && ! hero.requestCancel) {
+        const index = hero.foodPath.pop();
+        const pos = helper.getPositionByIndex(index);
+        if (maze.foods[index]) {
+          maze.foods[index].destroy();
+        }
+        hero.col = pos.col;
+        hero.row = pos.row;
+        hero.css({left: hero.size*pos.col, top: hero.size*pos.row});
+        await helper.sleep(100);
+      }
+      maze.catchFood();
+    };
+
+
     maze.hero = hero;
     maze.catchFood();
     return hero;
@@ -108,9 +146,15 @@ const pathFinder = {
       .appendTo(maze.map)
       .css({width: size, height: size, left: size*col, top: size*row, lineHeight: size+'px'})
       .click(function() {
-        maze.foods[helper.getIndex(food.col, row)] = undefined;
-        this.remove();
+        food.destroy();
+
       })
+
+    food.destroy = function () {
+      delete maze.foods[helper.getIndex(food.col, row)];
+      maze.catchFood();
+      food.remove();
+    };
     food.size = size;
     food.col = col;
     food.row = row;
