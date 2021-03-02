@@ -36,7 +36,7 @@ $(document).ready(function(){
     maze.data.isGenerating = false;
   }
 
-  $("#form1").parent().prepend(component.createInput("mousePosition", "position").find("input").removeAttr("type"));
+  // $("#form1").parent().prepend(component.createInput("mousePosition", "position").find("input").removeAttr("type"));
 
   $("#form1").append(component.createInput("row", "Row", 30));
   $("#form1").append(component.createInput("column", "Column", 30));
@@ -54,7 +54,7 @@ $(document).ready(function(){
       if ( ! box) {
         continue;
       }
-      
+
       box.walls = [false, false, false, false];
       if (box.row == 0) {
         box.walls[0] = true;
@@ -93,14 +93,12 @@ $(document).ready(function(){
   $("#form2").append(component.createButton("Random Hero", () => {
     $("#clickAction").val("PLACE_HERO");
     if (maze.boxes.length > 0) {
-      console.log(Math.floor(Math.random() * maze.boxes.length))
       maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown");
     }
   }));
   $("#form2").append(component.createButton("Random Food", () => {
     $("#clickAction").val("PLACE_FOOD");
     if (maze.boxes.length > 0) {
-      console.log(Math.floor(Math.random() * maze.boxes.length))
       maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown");
     }
   }));

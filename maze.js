@@ -5,6 +5,7 @@ const maze = {
   map: $("#map"),
   catchFood: () => {
     let count = 0;
+    
     for (let i = 0; i < maze.foods.length; i++) {
       if (maze.foods[i]) {
         count++;
@@ -12,7 +13,9 @@ const maze = {
     }
     if (maze.hero) {
      if (count > 0) {
-       maze.hero.catchFood();
+      if ($("#autoFindPath").prop("checked")) {
+        maze.hero.catchFood();
+      }
      } else {
        maze.hero.resetStat();
      }
