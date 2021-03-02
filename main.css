@@ -22,6 +22,22 @@ body > div {
 .box:hover {
   transition:300ms;
   background-color: #2980b9;
-  transform: scale(1.5);
-  z-index: 3;
+  /* transform: scale(1.5); */
+  /* z-index: 3; */
+} 
+
+.hero, .food{
+  position: absolute;
+  z-index: 30;
+  text-align: center;
+  cursor: default;
+}
+
+.food-check {
+  background-color:#17c0eb;
+  transition: 300ms;
+}
+.food-path {
+  background-color: #3ae374;
+  transition: 300ms;
 }

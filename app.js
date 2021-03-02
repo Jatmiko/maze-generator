@@ -27,23 +27,33 @@ $(document).ready(function(){
     maze.map.css({width: maze.data.size, height: maze.data.size});
     maze.map.empty();
     maze.boxes = [];
+    maze.foods = [];
     await maze.traverse(0);
     maze.data.isGenerating = false;
   }
 
+  $("#form1").parent().prepend(component.createInput("mousePosition", "position").find("input").removeAttr("type"));
+
   $("#form1").append(component.createInput("row", "Row", 30));
   $("#form1").append(component.createInput("column", "Column", 30));
   $("#form1").append(component.createDropdown("speed", "Speed", [
-    {label: 'Instant', value: 0},
-    {label: 'Very fast', value: 10, selected: true},
+    {label: 'Instant', value: 0, selected: true},
+    {label: 'Very fast', value: 10},
     {label: 'Fast', value: 500},
     {label: 'Normal', value: 250},
     {label: 'Slow', value: 1000},
     {label: 'Very slow', value: 3000},
   ]));
   $("#form1").append(component.createButton("generate", generate));
-
   $("#speed").change(function(){
     maze.data.speed = parseInt($("#speed").val());
   }).trigger("change");
+
+  $("#form2").append(component.createDropdown("clickAction", "Click Action", [
+    {label: 'Place hero', value: "PLACE_HERO"},
+    // {label: 'Change tile', value: "CHANGE_TILE"},
+    {label: 'Place food', value: "PLACE_FOOD"},
+  ]));
+  $("#form2").append(component.createButton("eat", () => maze.hero.catchFood()));
+  generate();
 })

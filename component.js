@@ -4,12 +4,12 @@ const component = {
       label = id.substr(0,1).toUpperCase() + id.substr(1, id.length-1);
     }
 
-    return `<div class="form-group row">
+    return $(`<div class="form-group row">
       <label for="staticEmail" class="col-sm-4 col-form-label col-form-label-sm">${label}</label>
       <div class="col-sm-8">
         <input type="number" class="form-control form-control-sm" id="${id}" value="${defaultValue}" placeholder="${placeHolder}">
       </div>
-    </div>`;
+    </div>`);
   },
   createDropdown: function(id, label, options) {
     if (!label) {

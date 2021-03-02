@@ -1,5 +1,7 @@
 const maze = {
   boxes: [],
+  foods: [],
+  hero: null,
   map: $("#map"),
   data: {
     col: 10,
@@ -15,8 +17,12 @@ const maze = {
       .addClass("box")
       .css({width: size, height: size, left: size*col, top: size*row})
 
+    box.mouseenter(function() {
+      $("#mousePosition").val(box.row+","+ box.col);
+    })
     box.col = col;
     box.row = row;
+    box.size = size;
     box.walls = [true, true, true, true]; //top right btm left
     box.redrawWalls = function() {
       const borderText = '1px solid #ecf0f1';
@@ -52,6 +58,18 @@ const maze = {
       return true;
     }
     box.redrawWalls();
+    box.handleClick = function() {
+      const value = $("#clickAction").val();
+      if (value === 'PLACE_HERO') {
+        maze.hero = pathFinder.createHero(box.size, box.col, box.row);
+      }
+      if (value === 'PLACE_FOOD') {
+        pathFinder.createFood(box.size, box.col, box.row);
+      }
+    }
+    box.click(box.handleClick);
+    box.appendTo(maze.map)
+
     return box;
   },
   traverse: async function (index, fromDirection) {
@@ -67,7 +85,6 @@ const maze = {
       directions.splice(fromDirection, 1);
     }
 
-    maze.map.append(box);
     if(maze.data.speed > 0) {
       box.toggle({effect: "scale", duration: 0});
       box.toggle({effect: "scale", duration: 200});
