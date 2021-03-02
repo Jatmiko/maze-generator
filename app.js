@@ -44,6 +44,26 @@ $(document).ready(function(){
     {label: 'Slow', value: 1000},
     {label: 'Very slow', value: 3000},
   ]));
+  $("#form1").append(component.createButton("remove walls", () => {
+    for (let i = 0; i < maze.boxes.length; i++) {
+      const box = maze.boxes[i];
+      box.walls = [false, false, false, false];
+      console.log(box.col, maze.data.col)
+      if (box.row == 0) {
+        box.walls[0] = true;
+      }
+      if (box.col == maze.data.col-1) {
+        box.walls[1] = true;
+      }
+      if (box.row == maze.data.row-1) {
+        box.walls[2] = true;
+      }
+      if (box.col == 0) {
+        box.walls[3] = true;
+      }
+      maze.boxes[i].redrawWalls();
+    }
+  }));
   $("#form1").append(component.createButton("generate", generate));
   $("#speed").change(function(){
     maze.data.speed = parseInt($("#speed").val());

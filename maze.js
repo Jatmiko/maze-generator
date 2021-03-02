@@ -3,6 +3,7 @@ const maze = {
   foods: [],
   hero: null,
   map: $("#map"),
+  catchFood: () => maze.hero && maze.foods.length > 0&& maze.hero.catchFood(),
   data: {
     col: 10,
     row: 10,
@@ -61,6 +62,7 @@ const maze = {
     box.handleClick = function() {
       const value = $("#clickAction").val();
       if (value === 'PLACE_HERO') {
+        maze.hero && maze.hero.destroy();
         maze.hero = pathFinder.createHero(box.size, box.col, box.row);
       }
       if (value === 'PLACE_FOOD') {

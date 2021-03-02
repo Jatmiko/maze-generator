@@ -6,7 +6,7 @@ const pathFinder = {
       .appendTo(maze.map)
       .css({width: size, height: size, left: size*col, top: size*row, lineHeight: size+'px'})
       .click(function() {
-        this.remove();
+        hero.destroy();
       })
     hero.size = size;
     hero.col = col;
@@ -17,12 +17,21 @@ const pathFinder = {
     hero.queue = [];
     hero.fromIndex = [];
 
-    hero.catchFood = async function() {
+    hero.destroy = function() {
+      hero.resetStat();
+      this.remove();
+      maze.hero = null;
+
+    }
+    hero.resetStat = function() {
+      $(".food-check,.food-path").removeClass("food-check").removeClass("food-path");
       hero.visited = [];
       hero.foodPath = [];
       hero.queue = [];
       hero.fromIndex = [];
-      $(".food-check,.food-path").removeClass("food-check").removeClass("food-path");
+    }
+    hero.catchFood = async function() {
+      hero.resetStat();
       await hero.checkFood(hero.col, hero.row);
       if (hero.foodPath.length == 0) {
         $(".food-check,.food-path").removeClass("food-check").removeClass("food-path");
@@ -77,11 +86,23 @@ const pathFinder = {
         hero.getPath(hero.fromIndex[index]);
       }
     };
-    
+    maze.hero = hero;
+    maze.catchFood();
     return hero;
   },
   createFood: function (size, col, row) {
-    const emojis = ['🍇','🍈','🍉 ','🍊 ','🍋 ','🍌 ','🍍 ','🥭 ','🍎  ','🍏  ','🍐 ','🍑 ','🍒 ','🍓 ','🫐','🥝  ','🍅 ','🫒 ','🥥 ','🥑 ','🍆 ','🥔 ','🥕 ','🌽 ','🌶️','🫑','🥒 ','🥬  ','🥦 ','🧄 ','🧅 ','🍄 ','🥜 ','🌰 ','🍞 ','🥐 ','🥖  ','🫓 ','🥨 ','🥯 ','🥞 ','🧇 ','🧀  ','🍖   ','🍗  ','🥩   ','🥓 ','🍔 ','🍟  ','🍕 ','🌭  ','🥪 ','🌮 ','🌯 ','🫔 ','🥙  ','🧆 ','🥚 ','🍳 ','🥘    ','🍲   ','🫕 ','🥣   ','🥗  ','🍿 ','🧈 ','🧂 ','🥫  ','🍱  ','🍘  ','🍙  ','🍚  ','🍛  ','🍜  ','🍝 ','🍠   ','🍢 ','🍣 ','🍤  ','🍥    ','🥮  ','🍡 ','🥟 ','🥠  ','🥡  ','🦪 ','🍦   ','🍧  ','🍨  ','🍩 ','🍪 ','🎂  ','🍰 ','🧁 ','🥧 ','🍫  ','🍬 ','🍭 ','🍮 ','🍯'];
+    const emojis = [
+      '🍇','🍈','🍉','🍊','🍋','🍌','🍍','🥭','🍎','🍏',
+      '🍐','🍑','🍒','🍓','🥝','🍅','🥥','🥑','🍆','🥔',
+      '🥕','🌽','🌶️','🥒','🥬','🥦','🧄','🧅','🍄','🥜',
+      '🌰','🍞','🥐','🥖','🥨','🥯','🥞','🧇','🧀','🍖',
+      '🍗','🥩','🥓','🍔','🍟','🍕','🌭','🥪','🌮','🌯',
+      '🥙','🧆','🥚','🍳','🥘','🍲','🥣','🥗','🍿','🧈',
+      '🧂','🥫','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍠',
+      '🍢','🍣','🍤','🍥','🥮','🍡','🥟','🥠','🥡','🦪',
+      '🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫',
+      '🍬','🍭','🍮','🍯',
+    ];
     const food = $(`<div>${emojis[Math.floor(Math.random() * emojis.length)]}</div>`)
       .addClass('food')
       .appendTo(maze.map)
@@ -94,6 +115,8 @@ const pathFinder = {
     food.col = col;
     food.row = row;
     maze.foods[helper.getIndex(col, row)] = food;
+    maze.catchFood();
+    
     return food;
   },
 }
