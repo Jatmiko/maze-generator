@@ -34,11 +34,11 @@ body > div {
 }
 
 .food-check {
-  background-color:#17c0eb;
+  background-color:#38ada9  ;
   transition: 300ms;
 }
 .food-path {
-  background-color: #38ada9;
+  background-color: #20bf6b;
   transition: 300ms;
 }
 

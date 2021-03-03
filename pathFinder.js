@@ -20,15 +20,22 @@ const pathFinder = {
     hero.fromIndex = [];
     hero.isFindingPath = false;
     hero.requestCancel = false;
+    hero.stopCatchFood = function() {
+      return new Promise( async function (resolve) {
+        if (hero.isFindingPath) {
+          hero.requestCancel = true;
+          while (hero.isFindingPath) {
+            await helper.sleep(10);
+          }
+          hero.requestCancel = false;
+        }
+        resolve();  
+      });
+
+    }
     hero.destroy = async function() {
       maze.hero = null;
-      if (hero.isFindingPath) {
-        hero.requestCancel = true;
-        while (hero.isFindingPath) {
-          await helper.sleep(10);
-        }
-        hero.requestCancel = false;
-      }
+      await hero.stopCatchFood();
       hero.resetStat();
       this.remove();
     }
@@ -44,14 +51,7 @@ const pathFinder = {
         return;
       }
 
-      if (hero.isFindingPath) {
-        hero.requestCancel = true;
-        while (hero.isFindingPath) {
-          await helper.sleep(10);
-        }
-        hero.requestCancel = false;
-      }
-
+      await hero.stopCatchFood();
       hero.isFindingPath = true;
       hero.resetStat();
       
@@ -130,12 +130,13 @@ const pathFinder = {
         hero.css({left: hero.size*pos.col, top: hero.size*pos.row});
         await helper.sleep(100);
       }
-      maze.catchFood();
     };
 
 
     maze.hero = hero;
-    maze.catchFood();
+    if ($("#autoFindPath").prop("checked")) {
+      maze.catchFood();
+    }
     return hero;
   },
   createFood: function (size, col, row) {
@@ -160,17 +161,25 @@ const pathFinder = {
 
       })
 
-    food.destroy = function () {
+    food.destroy = async function () {
       delete maze.foods[helper.getIndex(food.col, row)];
-      maze.catchFood();
+      if (maze.hero && maze.hero.isFindingPath) {
+        if ($("#autoFindPath").prop("checked")) {
+          maze.catchFood();
+        } else {
+          maze.hero && await maze.hero.stopCatchFood();
+        }
+      }
       food.remove();
     };
     food.size = size;
     food.col = col;
     food.row = row;
     maze.foods[helper.getIndex(col, row)] = food;
-    maze.catchFood();
-    
+
+    if ($("#autoFindPath").prop("checked")) {
+      maze.catchFood();
+    }
     return food;
   },
 }

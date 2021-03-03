@@ -5,20 +5,18 @@ const maze = {
   map: $("#map"),
   catchFood: () => {
     let count = 0;
-    
     for (let i = 0; i < maze.foods.length; i++) {
       if (maze.foods[i]) {
         count++;
       }
     }
+    
     if (maze.hero) {
-     if (count > 0) {
-      if ($("#autoFindPath").prop("checked")) {
+      if (count > 0) {
         maze.hero.catchFood();
+      } else {
+        maze.hero.resetStat();
       }
-     } else {
-       maze.hero.resetStat();
-     }
     }
   },
   data: {

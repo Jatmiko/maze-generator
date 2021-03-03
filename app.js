@@ -105,8 +105,11 @@ $(document).ready(function(){
     }
   }));
   $("#form2").append(component.createButton("Find path", () => maze.hero.catchFood()));
+  $("#form2").append(component.createButton("Stop", () => maze.hero && maze.hero.stopCatchFood()));
   $("#form2").append(component.createCheckBox("autoFindPath", "Auto find path").change(function(){
-    maze.catchFood();
+    if ($("#autoFindPath").prop("checked")) {
+      maze.catchFood();
+    }
   }));
   $("#form2").hide();
   
