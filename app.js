@@ -1,5 +1,11 @@
-$(document).ready(function(){
+var isMouseDown = false;
+$(document).mousedown(function() {
+  isMouseDown = true;
+}).mouseup(function() {
+  isMouseDown = false;  
+});
 
+$(document).ready(function(){
   async function generate()
   {
     if (maze.data.isGenerating) {
@@ -30,7 +36,9 @@ $(document).ready(function(){
     maze.foods = [];
     maze.hero && await maze.hero.destroy();
 
+    $("#form2").fadeOut(0);
     await maze.traverse(0);
+    $("#form2").fadeIn(500);
     $("#pointer").css({width:0, height: 0});
 
     maze.data.isGenerating = false;
@@ -38,70 +46,69 @@ $(document).ready(function(){
 
   // $("#form1").parent().prepend(component.createInput("mousePosition", "position").find("input").removeAttr("type"));
 
-  $("#form1").append(component.createInput("row", "Row", 30));
-  $("#form1").append(component.createInput("column", "Column", 30));
-  $("#form1").append(component.createDropdown("speed", "Speed", [
-    {label: 'Instant', value: 0, selected: true},
-    {label: 'Very fast', value: 10},
+  $("#form1").append(component.createInput("row", "Row", 20));
+  $("#form1").append(component.createInput("column", "Column", 20));
+  $("#form1").append(component.createDropdown("speed", "Generate Speed", [
+    {label: 'Instant', value: 0},
+    {label: 'Very fast', value: 10, selected: true},
     {label: 'Fast', value: 500},
     {label: 'Normal', value: 250},
     {label: 'Slow', value: 1000},
     {label: 'Very slow', value: 3000},
   ]));
-  $("#form1").append(component.createButton("remove walls", () => {
-    for (let i = 0; i < maze.boxes.length; i++) {
-      const box = maze.boxes[i];
-      if ( ! box) {
-        continue;
-      }
-
-      box.walls = [false, false, false, false];
-      if (box.row == 0) {
-        box.walls[0] = true;
-      }
-      if (box.col == maze.data.col-1) {
-        box.walls[1] = true;
-      }
-      if (box.row == maze.data.row-1) {
-        box.walls[2] = true;
-      }
-      if (box.col == 0) {
-        box.walls[3] = true;
-      }
-      maze.boxes[i].redrawWalls();
-    }
-  }));
-  $("#form1").append(component.createButton("generate", generate));
+  $("#form1").append(component.createButton("Generate maze", generate));
   $("#speed").change(function(){
     maze.data.speed = parseInt($("#speed").val());
   }).trigger("change");
 
   $("#form2").append(component.createDropdown("clickAction", "Click Action", [
     {label: 'Place hero', value: "PLACE_HERO"},
-    // {label: 'Change tile', value: "CHANGE_TILE"},
     {label: 'Place food', value: "PLACE_FOOD"},
+    {label: 'Change wall', value: "CHANGE_WALL"},
   ]));
+  
+  $("#form2").append(component.createBoxBorderDropDown());
+
   $("#form2").append(component.createDropdown("pathFinderSpeed", "Path finder speed", [
     {label: 'Instant', value: 0, selected: true},
-    {label: 'Very fast', value: 10},
+    {label: 'Very fast', value: 10, selected: true},
     {label: 'Fast', value: 500},
     {label: 'Normal', value: 250},
     {label: 'Slow', value: 1000},
     {label: 'Very slow', value: 3000},
   ]));
-  $("#form2").append(component.createCheckBox("autoFindPath", "Auto find path"));
-  $("#form2").append(component.createButton("Random Hero", () => {
-    $("#clickAction").val("PLACE_HERO");
-    if (maze.boxes.length > 0) {
-      maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown");
+
+  $("#form2").append(component.createButton("Remove all walls", () => {
+    if (maze.data.isGenerating) {
+      return;
+    }
+    for (let i = 0; i < maze.boxes.length; i++) {
+      const box = maze.boxes[i];
+      if ( ! box) {
+        continue;
+      }
+      box.walls = [false, false, false, false];
+      box.rebuildEdgeWalls();
+      maze.boxes[i].redrawWalls();
     }
   }));
-  $("#form2").append(component.createButton("Random Food", () => {
+  $("#form2").append(component.createButton("Random Place Hero", () => {
+    $("#clickAction").val("PLACE_HERO");
+    if (maze.boxes.length > 0) {
+      maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown").trigger("mouseup");
+    }
+  }));
+  $("#form2").append(component.createButton("Random Place Food", () => {
     $("#clickAction").val("PLACE_FOOD");
     if (maze.boxes.length > 0) {
-      maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown");
+      maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown").trigger("mouseup");
     }
   }));
   $("#form2").append(component.createButton("Find path", () => maze.hero.catchFood()));
+  $("#form2").append(component.createCheckBox("autoFindPath", "Auto find path").change(function(){
+    maze.catchFood();
+  }));
+  $("#form2").hide();
+  
   generate();
 })

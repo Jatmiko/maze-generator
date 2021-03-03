@@ -1,7 +1,9 @@
+const heroEmoji = ['🦸','🦸‍♂️'][Math.floor(Math.random() * 2)];
+
 const pathFinder = {
   createHero: function (size, col, row) {
     $(".hero").remove();
-    const hero = $('<div>🦸</div>')
+    const hero = $(`<div>${heroEmoji}</div>`)
       .addClass('hero')
       .appendTo(maze.map)
       .css({width: size, height: size, left: size*col, top: size*row, lineHeight: size+'px'})

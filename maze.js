@@ -42,9 +42,24 @@ const maze = {
     box.row = row;
     box.size = size;
     box.walls = [true, true, true, true]; //top right btm left
+
+    box.rebuildEdgeWalls = function() {
+      if (box.row == 0) {
+        box.walls[0] = true;
+      }
+      if (box.col == maze.data.col-1) {
+        box.walls[1] = true;
+      }
+      if (box.row == maze.data.row-1) {
+        box.walls[2] = true;
+      }
+      if (box.col == 0) {
+        box.walls[3] = true;
+      }
+    }
     box.redrawWalls = function() {
       const borderText = '1px solid #ecf0f1';
-      this.css({
+      box.css({
         borderTop:    box.walls[0] ? borderText : "",
         borderRight:  box.walls[1] ? borderText : "",
         borderBottom: box.walls[2] ? borderText : "",
@@ -85,8 +100,43 @@ const maze = {
       if (value === 'PLACE_FOOD') {
         pathFinder.createFood(box.size, box.col, box.row);
       }
+      if (value === 'CHANGE_WALL') {
+        const walls = $("#wallType").data("walls");
+        if ( ! walls || maze.data.isGenerating) {
+          return;
+        }
+        box.walls = [...walls];
+        box.rebuildEdgeWalls();
+
+        if (box.row > 0) {
+          const neighbourBox = maze.boxes[helper.getIndex(box.col, box.row - 1)];
+          neighbourBox.walls[2] = box.walls[0];
+          neighbourBox.redrawWalls();
+        }
+        if (box.col < maze.data.col - 1) {
+          const neighbourBox = maze.boxes[helper.getIndex(box.col + 1, box.row)];
+          neighbourBox.walls[3] = box.walls[1];
+          neighbourBox.redrawWalls();
+        }
+        if (box.row < maze.data.row - 1) {
+          const neighbourBox = maze.boxes[helper.getIndex(box.col, box.row + 1)];
+          neighbourBox.walls[0] = box.walls[2];
+          neighbourBox.redrawWalls();
+        }
+        if (box.col > 0) {
+          const neighbourBox = maze.boxes[helper.getIndex(box.col - 1, box.row)];
+          neighbourBox.walls[1] = box.walls[3];
+          neighbourBox.redrawWalls();
+        }
+        box.redrawWalls();
+      }
     }
     box.mousedown(box.handleClick);
+    box.mouseenter(function() {
+      if(isMouseDown) {
+        box.handleClick();
+      }
+    })
     box.appendTo(maze.map)
 
     return box;

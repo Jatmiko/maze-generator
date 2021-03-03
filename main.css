@@ -41,3 +41,22 @@ body > div {
   background-color: #38ada9;
   transition: 300ms;
 }
+
+.box-option {
+  background-color: #3498db;
+  width: 20px;
+  height: 20px;
+  outline: 3px solid #3498db;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+#map {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
+}
