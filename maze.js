@@ -10,7 +10,7 @@ const maze = {
         count++;
       }
     }
-    
+
     if (maze.hero) {
       if (count > 0) {
         maze.hero.catchFood();
@@ -55,6 +55,28 @@ const maze = {
         box.walls[3] = true;
       }
     }
+    box.rebuildNeigbourWalls = function() {
+      if (box.row > 0) {
+        const neighbourBox = maze.boxes[helper.getIndex(box.col, box.row - 1)];
+        neighbourBox.walls[2] = box.walls[0];
+        neighbourBox.redrawWalls();
+      }
+      if (box.col < maze.data.col - 1) {
+        const neighbourBox = maze.boxes[helper.getIndex(box.col + 1, box.row)];
+        neighbourBox.walls[3] = box.walls[1];
+        neighbourBox.redrawWalls();
+      }
+      if (box.row < maze.data.row - 1) {
+        const neighbourBox = maze.boxes[helper.getIndex(box.col, box.row + 1)];
+        neighbourBox.walls[0] = box.walls[2];
+        neighbourBox.redrawWalls();
+      }
+      if (box.col > 0) {
+        const neighbourBox = maze.boxes[helper.getIndex(box.col - 1, box.row)];
+        neighbourBox.walls[1] = box.walls[3];
+        neighbourBox.redrawWalls();
+      }
+    };
     box.redrawWalls = function() {
       const borderText = '1px solid #ecf0f1';
       box.css({
@@ -105,27 +127,7 @@ const maze = {
         }
         box.walls = [...walls];
         box.rebuildEdgeWalls();
-
-        if (box.row > 0) {
-          const neighbourBox = maze.boxes[helper.getIndex(box.col, box.row - 1)];
-          neighbourBox.walls[2] = box.walls[0];
-          neighbourBox.redrawWalls();
-        }
-        if (box.col < maze.data.col - 1) {
-          const neighbourBox = maze.boxes[helper.getIndex(box.col + 1, box.row)];
-          neighbourBox.walls[3] = box.walls[1];
-          neighbourBox.redrawWalls();
-        }
-        if (box.row < maze.data.row - 1) {
-          const neighbourBox = maze.boxes[helper.getIndex(box.col, box.row + 1)];
-          neighbourBox.walls[0] = box.walls[2];
-          neighbourBox.redrawWalls();
-        }
-        if (box.col > 0) {
-          const neighbourBox = maze.boxes[helper.getIndex(box.col - 1, box.row)];
-          neighbourBox.walls[1] = box.walls[3];
-          neighbourBox.redrawWalls();
-        }
+        box.rebuildNeigbourWalls();
         box.redrawWalls();
       }
     }

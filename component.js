@@ -21,14 +21,14 @@ const component = {
       strings.push(`<option ${options[i].selected ? 'selected' : ''} value="${options[i].value}">${options[i].label}</option>`);
     }
 
-    return `<div class="form-group row">
+    return $(`<div class="form-group row">
       <label for="staticEmail" class="col-sm-4 col-form-label col-form-label-sm">${label}</label>
       <div class="col-sm-8">
         <select class="custom-select my-1 mr-sm-2 form-control form-control-sm" id="${id}">
           ${strings.join()}
         </select>
       </div>
-    </div>`;
+    </div>`);
   },
   createCheckBox: function(id, label) {
     if (!label) {
