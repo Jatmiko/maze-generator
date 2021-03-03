@@ -51,7 +51,7 @@ $(document).ready(function(){
   $("#form1").append(component.createDropdown("speed", "Generate Speed", [
     {label: 'Instant', value: 0},
     {label: 'Very fast', value: 10, selected: true},
-    {label: 'Fast', value: 500},
+    {label: 'Fast', value: 50},
     {label: 'Normal', value: 250},
     {label: 'Slow', value: 1000},
     {label: 'Very slow', value: 3000},
@@ -71,11 +71,11 @@ $(document).ready(function(){
 
   $("#form2").append(component.createDropdown("pathFinderSpeed", "Path finder speed", [
     {label: 'Instant', value: 0, selected: true},
-    {label: 'Very fast', value: 10, selected: true},
-    {label: 'Fast', value: 500},
-    {label: 'Normal', value: 250},
-    {label: 'Slow', value: 1000},
-    {label: 'Very slow', value: 3000},
+    {label: 'Very fast', value: 1, selected: true},
+    {label: 'Fast', value: 10},
+    {label: 'Normal', value: 50},
+    {label: 'Slow', value: 250},
+    {label: 'Very slow', value: 1000},
   ]));
 
   $("#form2").append(component.createButton("Remove all walls", () => {

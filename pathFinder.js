@@ -99,7 +99,11 @@ const pathFinder = {
 
       const pathFinderSpeed = parseInt($("#pathFinderSpeed").val());
       if(pathFinderSpeed > 0) {
-        await helper.sleep(10);
+        if (pathFinderSpeed > 1) {
+          await helper.sleep(pathFinderSpeed);
+        } else if(Math.random() * 2 > 1){
+          await helper.sleep(pathFinderSpeed);
+        }
       }
       
       while (hero.queue.length > 0 && ! hero.requestCancel) {
