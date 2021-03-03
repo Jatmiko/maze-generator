@@ -147,13 +147,13 @@ $(document).ready(function(){
   ]));
 
   
-  $("#form2").append(component.createButton("Random Place Hero", () => {
+  $("#form2").append(component.createButton(heroEmoji+"Random Place Hero", () => {
     $("#clickAction").val("PLACE_HERO");
     if (maze.boxes.length > 0) {
       maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown").trigger("mouseup");
     }
   }));
-  $("#form2").append(component.createButton("Random Place Food", () => {
+  $("#form2").append(component.createButton(foodEmojis[Math.floor(Math.random() * foodEmojis.length)]+"Random Place Food", () => {
     $("#clickAction").val("PLACE_FOOD");
     if (maze.boxes.length > 0) {
       maze.boxes[Math.floor(Math.random() * maze.boxes.length)].trigger("mousedown").trigger("mouseup");

@@ -105,6 +105,9 @@ const component = {
         buttonGroup.find("#wallType").data("walls", borderArray[i]).html(boxOption.prop("outerHTML"));
         $("#clickAction").val("CHANGE_WALL");
       })
+      if (i == borderArray.length - 1) {
+        buttonGroup.find("#wallType").data("walls", borderArray[i]).html(boxOption.prop("outerHTML"));
+      }
       buttonGroup.find(".dropdown-menu").append(dropdownItem);
     }
 
